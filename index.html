@@ -6,9 +6,10 @@
     <!--
     Author: Dave Martinez
     Date: 25 OCT 26
-    Purpose: Portfolio page implementing control flow (conditional logic, loops, event listeners) 
-    for the Control Flow Implementation project. Includes Featured Content section, skills list, 
-    dark mode toggle, and interactive contact form.
+    Purpose: Portfolio page implementing control flow and DOM manipulation 
+    for the Creating and Referencing DOM Elements project. Includes dynamic 
+    element creation, selector-based modifications, timed form confirmation, 
+    Featured Content, skills list, and dark mode.
     -->
     <title>David Martinez - Portfolio</title>
     <style>
@@ -145,15 +146,35 @@
         .hidden {
             display: none;
         }
+
+        /* Styles for dynamic notification and form status */
+        #notification {
+            background-color: #ffc107;
+            color: #333;
+            padding: 12px;
+            text-align: center;
+            font-weight: bold;
+            margin: 0;
+            display: none;
+        }
+
+        #formStatus {
+            margin-top: 15px;
+            font-weight: bold;
+            min-height: 1.2em;
+        }
     </style>
 </head>
 <body>
+    <!-- Dynamic notification area (initially empty) -->
+    <div id="notification"></div>
+
     <header>
         <div class="dark-mode-toggle">
             <label for="darkModeToggle">Dark Mode</label>
             <input type="checkbox" id="darkModeToggle">
         </div>
-        <h1>David Martinez</h1>
+        <h1>Dave Martinez</h1>
         <p>Web Development Portfolio</p>
         <nav>
             <a href="#about">About</a>
@@ -167,6 +188,8 @@
         <p>I'm Dave Martinez, a student at ECPI University studying web development. I enjoy building interactive websites and learning new technologies.</p>
         <h3>Skills & Technologies</h3>
         <ul id="skillsList" class="skills"></ul>
+        <!-- Dynamic project introduction will be appended here -->
+        <div id="projectIntroContainer"></div>
     </section>
 
     <section id="featured">
@@ -180,7 +203,6 @@
             <h3>Personal Projects</h3>
             <p><a href="https://github.com/davmar3334" target="_blank">My GitHub Profile</a></p>
             <p>View my repositories and personal coding projects.</p>
-            <!-- Add more project links/images as needed -->
         </div>
     </section>
 
@@ -195,13 +217,13 @@
             <textarea id="message" name="message" rows="4" required></textarea>
             <button type="submit" id="submitBtn">Submit</button>
         </form>
+        <!-- Status message for timed confirmation -->
+        <p id="formStatus"></p>
     </section>
 
     <script>
-        // Skills array - at least 5 items
+        // ===== Skills list generated with a for loop =====
         const skills = ["HTML", "CSS", "JavaScript", "Git", "GitHub", "Python", "Responsive Design"];
-
-        // Loop to display skills as a bulleted list in the About section
         const skillsList = document.getElementById("skillsList");
         for (let i = 0; i < skills.length; i++) {
             const li = document.createElement("li");
@@ -209,44 +231,76 @@
             skillsList.appendChild(li);
         }
 
-        // Conditional logic for Featured Content
-        // Simulate number of projects (change this number to test both conditions)
-        const projectCount = 2; // Fewer than 3 → show both divs
-
+        // ===== Conditional logic for Featured Content =====
+        const projectCount = 2; // Change to 3 or higher to test the other branch
         const uniDiv = document.getElementById("universityResources");
         const projDiv = document.getElementById("personalProjects");
 
         if (projectCount < 3) {
-            // Show both University Resources and Personal Projects
             uniDiv.classList.remove("hidden");
             projDiv.classList.remove("hidden");
         } else {
-            // Show only Personal Projects
             uniDiv.classList.add("hidden");
             projDiv.classList.remove("hidden");
         }
 
-        // Dark Mode Slider
+        // ===== Dark Mode toggle =====
         const darkModeToggle = document.getElementById("darkModeToggle");
         darkModeToggle.addEventListener("change", function () {
             document.body.classList.toggle("dark-mode");
         });
 
-        // Form Submit Button Interactivity
+        // ===== 3.9 Project: Dynamically Add a New Element =====
+        // Create a new paragraph introducing a recent project and append it to the About section
+        const projectIntro = document.createElement("p");
+        projectIntro.textContent = "Recent Project: Interactive Portfolio with Dynamic DOM updates, timed form confirmations, and dark mode support.";
+        projectIntro.style.fontStyle = "italic";
+        projectIntro.style.marginTop = "15px";
+        document.getElementById("projectIntroContainer").appendChild(projectIntro);
+
+        // ===== 3.9 Project: Reference and Modify Existing Elements =====
+        // Select and modify the About Me heading
+        const aboutHeading = document.querySelector("#about h2");
+        aboutHeading.style.color = "#0056b3";
+        aboutHeading.style.fontSize = "1.8em";
+
+        // Select and modify the Contact heading
+        const contactHeading = document.getElementById("contact").querySelector("h2");
+        contactHeading.style.borderColor = "#28a745";
+        contactHeading.textContent = "Get in Touch";
+
+        // ===== 3.9 Project: Timed Confirmation for Form Submissions =====
         const submitBtn = document.getElementById("submitBtn");
+        const formStatus = document.getElementById("formStatus");
+        const contactForm = document.getElementById("contactForm");
+
         submitBtn.addEventListener("click", function (event) {
-            event.preventDefault(); // Prevent page refresh
+            event.preventDefault(); // Prevent default form submission / page refresh
 
             const name = document.getElementById("name").value.trim();
-            if (name) {
-                alert("Thank you, " + name + ", your message has been sent!");
-            } else {
+            if (!name) {
                 alert("Please enter your name.");
+                return;
             }
 
-            // Optional: clear form
-            document.getElementById("contactForm").reset();
+            // Dynamically show a loading message
+            formStatus.textContent = "Sending message...";
+            formStatus.style.color = "#007bff";
+
+            // Use setTimeout to delay the confirmation message by 2.5 seconds
+            setTimeout(function () {
+                formStatus.textContent = "Message sent successfully! Thank you, " + name + ".";
+                formStatus.style.color = "#28a745";
+                contactForm.reset(); // Clear the form
+            }, 2500);
         });
+
+        // Optional: Delayed notification banner at the top of the page
+        setTimeout(function () {
+            const notification = document.getElementById("notification");
+            notification.textContent = "Welcome! This portfolio uses dynamic DOM manipulation and timed interactions.";
+            notification.style.display = "block";
+        }, 1000);
     </script>
 </body>
 </html>

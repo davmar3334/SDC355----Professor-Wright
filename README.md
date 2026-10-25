@@ -1,12 +1,15 @@
-# David Martinez - Portfolio
+# Dave Martinez - Portfolio
 
-Personal portfolio page implementing control flow features for the Control Flow Implementation project.
+Personal portfolio page implementing control flow and DOM manipulation for the Creating and Referencing DOM Elements project.
 
 ## Features
-- **Featured Content** section with conditional logic (shows University Resources + Personal Projects if fewer than 3 projects, otherwise only Personal Projects)
-- **Skills list** generated with a `for` loop (7 skills)
-- **Dark Mode** toggle using `addEventListener` and CSS class switching
-- **Contact form** with `preventDefault` and personalized confirmation alert
+- **Dynamic DOM element**: A new paragraph is created and appended to the About section using `createElement()` and `appendChild()`.
+- **Selector-based modifications**: Two existing elements (About and Contact headings) are selected and updated (style and content).
+- **Timed form confirmation**: On submit, `preventDefault()` is used, a “Sending message...” status appears, then after 2.5 seconds a success message is shown via `setTimeout()`.
+- **Featured Content** with conditional logic
+- **Skills list** generated with a `for` loop
+- **Dark Mode** toggle
+- Delayed welcome notification
 
 ## How to use
 1. Upload `index.html` to a GitHub repository.
