@@ -1,19 +1,28 @@
-# Dave Martinez - Portfolio
+# Dave Martinez - Persistent Storage – Modal, Tooltip & Dark Mode
 
-Personal portfolio page implementing control flow and DOM manipulation for the Creating and Referencing DOM Elements project.
+**Release:** v1.0  
+**Date:** 2026-11-02  
+**Language:** HTML, CSS, JavaScript
 
-## Features
-- **Dynamic DOM element**: A new paragraph is created and appended to the About section using `createElement()` and `appendChild()`.
-- **Selector-based modifications**: Two existing elements (About and Contact headings) are selected and updated (style and content).
-- **Timed form confirmation**: On submit, `preventDefault()` is used, a “Sending message...” status appears, then after 2.5 seconds a success message is shown via `setTimeout()`.
-- **Featured Content** with conditional logic
-- **Skills list** generated with a `for` loop
-- **Dark Mode** toggle
-- Delayed welcome notification
+### Overview
+This release adds persistent storage and improved user experience features to the project page.  
+User preferences and interactions are now remembered across page loads.
 
-## How to use
-1. Upload `index.html` to a GitHub repository.
-2. Enable GitHub Pages (Settings → Pages → Source: main branch / root).
-3. Open the live site link.
+### What was added
+- **Welcome modal** that appears on page load with the message “This page is a work in progress” and a Close button
+- **Tooltip** on the Contact Form Submit button (“Click to send your message!”)
+- **Dark Mode persistence** using `localStorage` so the user’s preference is saved and automatically applied on future visits
+- Toggle state (checkbox) reflects the stored dark mode preference
 
-Change the `projectCount` variable in the script (currently set to `2`) to test both conditional branches.
+### Files
+- `index.html` – Updated page containing the modal, tooltip, and dark mode logic
+- (Any supporting CSS/JS files if separated)
+
+### How to test
+1. Open the page in a browser
+2. Close the welcome modal
+3. Hover over the Submit button to see the tooltip
+4. Toggle Dark Mode, then refresh the page — the mode should stay active
+5. Check `localStorage` in Developer Tools → Application tab to confirm the preference is stored
+
+---

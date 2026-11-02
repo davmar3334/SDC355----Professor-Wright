@@ -2,305 +2,190 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!--
-    Author: Dave Martinez
-    Date: 25 OCT 26
-    Purpose: Portfolio page implementing control flow and DOM manipulation 
-    for the Creating and Referencing DOM Elements project. Includes dynamic 
-    element creation, selector-based modifications, timed form confirmation, 
-    Featured Content, skills list, and dark mode.
-    -->
-    <title>David Martinez - Portfolio</title>
+<!--
+Author: Dave Martinez
+Date: 1NOV26
+Purpose: A simple web page that demonstrates persistent storage 
+with a welcome modal on load, a tooltip on the contact form submit 
+button, and a dark mode toggle that saves the user’s preference in 
+localStorage so it remains active across visits.
+-->
+    <title>Persistent Storage Project</title>
     <style>
-        :root {
-            --bg-color: #f4f4f4;
-            --text-color: #333;
-            --header-bg: #007bff;
-            --section-bg: #ffffff;
-            --link-color: #007bff;
-        }
-
-        body.dark-mode {
-            --bg-color: #1a1a1a;
-            --text-color: #f0f0f0;
-            --header-bg: #222;
-            --section-bg: #2d2d2d;
-            --link-color: #66b0ff;
-        }
-
+        /* Basic page styles */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 0;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            padding: 40px;
+            background-color: #ffffff;
+            color: #333333;
             transition: background-color 0.3s, color 0.3s;
         }
 
-        header {
-            background-color: var(--header-bg);
-            color: white;
-            padding: 20px;
-            text-align: center;
-            position: relative;
+        body.dark-mode {
+            background-color: #1e1e1e;
+            color: #f0f0f0;
         }
 
-        .dark-mode-toggle {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-        }
-
-        .dark-mode-toggle input {
-            width: 40px;
-            height: 20px;
-            cursor: pointer;
-        }
-
-        nav {
-            margin-top: 10px;
-        }
-
-        nav a {
-            color: white;
-            margin: 0 15px;
-            text-decoration: none;
-        }
-
-        section {
-            max-width: 900px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: var(--section-bg);
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        h2 {
-            border-bottom: 2px solid var(--header-bg);
-            padding-bottom: 8px;
-        }
-
-        .featured-box {
-            border: 2px solid #007bff;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 15px 0;
-            background-color: #f0f8ff;
-        }
-
-        body.dark-mode .featured-box {
-            background-color: #333;
-            border-color: #66b0ff;
-        }
-
-        .featured-box h3 {
+        h1 {
             margin-top: 0;
-            color: var(--header-bg);
         }
 
-        ul.skills {
-            list-style-type: disc;
-            padding-left: 20px;
+        /* Dark mode toggle */
+        .toggle-container {
+            margin: 20px 0;
         }
 
-        form label {
-            display: block;
-            margin-top: 10px;
-            font-weight: bold;
+        /* Contact form */
+        form {
+            max-width: 400px;
+            margin-top: 30px;
         }
 
-        form input, form textarea {
+        input, textarea {
             width: 100%;
-            padding: 8px;
-            margin-top: 5px;
+            padding: 10px;
+            margin: 8px 0;
             box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 4px;
         }
 
-        button {
-            margin-top: 15px;
-            padding: 10px 20px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
+        /* Tooltip styles */
+        .tooltip {
+            position: relative;
+            display: inline-block;
         }
 
-        button:hover {
-            background-color: #218838;
-        }
-
-        a {
-            color: var(--link-color);
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        /* Styles for dynamic notification and form status */
-        #notification {
-            background-color: #ffc107;
-            color: #333;
-            padding: 12px;
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 180px;
+            background-color: #555;
+            color: #fff;
             text-align: center;
-            font-weight: bold;
-            margin: 0;
-            display: none;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -90px;
+            opacity: 0;
+            transition: opacity 0.3s;
         }
 
-        #formStatus {
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Modal styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* slight transparency */
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            max-width: 400px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        body.dark-mode .modal {
+            background-color: #2d2d2d;
+            color: #f0f0f0;
+        }
+
+        .modal button {
             margin-top: 15px;
-            font-weight: bold;
-            min-height: 1.2em;
+            padding: 8px 20px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <!-- Dynamic notification area (initially empty) -->
-    <div id="notification"></div>
-
-    <header>
-        <div class="dark-mode-toggle">
-            <label for="darkModeToggle">Dark Mode</label>
+    <!-- Dark Mode Toggle -->
+    <div class="toggle-container">
+        <label>
             <input type="checkbox" id="darkModeToggle">
-        </div>
-        <h1>Dave Martinez</h1>
-        <p>Web Development Portfolio</p>
-        <nav>
-            <a href="#about">About</a>
-            <a href="#featured">Featured Content</a>
-            <a href="#contact">Contact</a>
-        </nav>
-    </header>
+            Dark Mode
+        </label>
+    </div>
 
-    <section id="about">
-        <h2>About Me</h2>
-        <p>I'm Dave Martinez, a student at ECPI University studying web development. I enjoy building interactive websites and learning new technologies.</p>
-        <h3>Skills & Technologies</h3>
-        <ul id="skillsList" class="skills"></ul>
-        <!-- Dynamic project introduction will be appended here -->
-        <div id="projectIntroContainer"></div>
-    </section>
+    <h1>Welcome to My Page</h1>
+    <p>This is a sample page demonstrating persistent storage features.</p>
 
-    <section id="featured">
-        <h2>Featured Content</h2>
-        <div id="universityResources" class="featured-box">
-            <h3>University Resources</h3>
-            <p><a href="https://www.ecpi.edu/" target="_blank">ECPI University Program Home Page</a></p>
-            <p>Access course materials, student portal, and campus resources.</p>
-        </div>
-        <div id="personalProjects" class="featured-box">
-            <h3>Personal Projects</h3>
-            <p><a href="https://github.com/davmar3334" target="_blank">My GitHub Profile</a></p>
-            <p>View my repositories and personal coding projects.</p>
-        </div>
-    </section>
+    <!-- Contact Form -->
+    <form id="contactForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
 
-    <section id="contact">
-        <h2>Contact Me</h2>
-        <form id="contactForm">
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" required>
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
-            <label for="message">Message:</label>
-            <textarea id="message" name="message" rows="4" required></textarea>
-            <button type="submit" id="submitBtn">Submit</button>
-        </form>
-        <!-- Status message for timed confirmation -->
-        <p id="formStatus"></p>
-    </section>
+        <label for="message">Message:</label>
+        <textarea id="message" name="message" rows="4" required></textarea>
+
+        <!-- Submit button with tooltip -->
+        <div class="tooltip">
+            <button type="submit">Submit</button>
+            <span class="tooltiptext">Click to send your message!</span>
+        </div>
+    </form>
+
+    <!-- Welcome Modal -->
+    <div id="welcomeModal" class="modal-overlay">
+        <div class="modal">
+            <h2>Welcome</h2>
+            <p>This page is a work in progress.</p>
+            <button id="closeModal">Close</button>
+        </div>
+    </div>
 
     <script>
-        // ===== Skills list generated with a for loop =====
-        const skills = ["HTML", "CSS", "JavaScript", "Git", "GitHub", "Python", "Responsive Design"];
-        const skillsList = document.getElementById("skillsList");
-        for (let i = 0; i < skills.length; i++) {
-            const li = document.createElement("li");
-            li.textContent = skills[i];
-            skillsList.appendChild(li);
-        }
+        // ========== Modal Logic ==========
+        // Show the modal when the page loads
+        window.addEventListener("load", function () {
+            document.getElementById("welcomeModal").style.display = "flex";
+        });
 
-        // ===== Conditional logic for Featured Content =====
-        const projectCount = 2; // Change to 3 or higher to test the other branch
-        const uniDiv = document.getElementById("universityResources");
-        const projDiv = document.getElementById("personalProjects");
+        // Close button hides the modal
+        document.getElementById("closeModal").addEventListener("click", function () {
+            document.getElementById("welcomeModal").style.display = "none";
+        });
 
-        if (projectCount < 3) {
-            uniDiv.classList.remove("hidden");
-            projDiv.classList.remove("hidden");
-        } else {
-            uniDiv.classList.add("hidden");
-            projDiv.classList.remove("hidden");
-        }
-
-        // ===== Dark Mode toggle =====
+        // ========== Dark Mode Persistence ==========
         const darkModeToggle = document.getElementById("darkModeToggle");
+        const body = document.body;
+
+        // Check localStorage on page load and apply saved preference
+        if (localStorage.getItem("darkMode") === "enabled") {
+            body.classList.add("dark-mode");
+            darkModeToggle.checked = true;
+        }
+
+        // Listen for toggle changes and save preference
         darkModeToggle.addEventListener("change", function () {
-            document.body.classList.toggle("dark-mode");
-        });
-
-        // ===== 3.9 Project: Dynamically Add a New Element =====
-        // Create a new paragraph introducing a recent project and append it to the About section
-        const projectIntro = document.createElement("p");
-        projectIntro.textContent = "Recent Project: Interactive Portfolio with Dynamic DOM updates, timed form confirmations, and dark mode support.";
-        projectIntro.style.fontStyle = "italic";
-        projectIntro.style.marginTop = "15px";
-        document.getElementById("projectIntroContainer").appendChild(projectIntro);
-
-        // ===== 3.9 Project: Reference and Modify Existing Elements =====
-        // Select and modify the About Me heading
-        const aboutHeading = document.querySelector("#about h2");
-        aboutHeading.style.color = "#0056b3";
-        aboutHeading.style.fontSize = "1.8em";
-
-        // Select and modify the Contact heading
-        const contactHeading = document.getElementById("contact").querySelector("h2");
-        contactHeading.style.borderColor = "#28a745";
-        contactHeading.textContent = "Get in Touch";
-
-        // ===== 3.9 Project: Timed Confirmation for Form Submissions =====
-        const submitBtn = document.getElementById("submitBtn");
-        const formStatus = document.getElementById("formStatus");
-        const contactForm = document.getElementById("contactForm");
-
-        submitBtn.addEventListener("click", function (event) {
-            event.preventDefault(); // Prevent default form submission / page refresh
-
-            const name = document.getElementById("name").value.trim();
-            if (!name) {
-                alert("Please enter your name.");
-                return;
+            if (this.checked) {
+                body.classList.add("dark-mode");
+                localStorage.setItem("darkMode", "enabled");
+            } else {
+                body.classList.remove("dark-mode");
+                localStorage.setItem("darkMode", "disabled");
             }
-
-            // Dynamically show a loading message
-            formStatus.textContent = "Sending message...";
-            formStatus.style.color = "#007bff";
-
-            // Use setTimeout to delay the confirmation message by 2.5 seconds
-            setTimeout(function () {
-                formStatus.textContent = "Message sent successfully! Thank you, " + name + ".";
-                formStatus.style.color = "#28a745";
-                contactForm.reset(); // Clear the form
-            }, 2500);
         });
 
-        // Optional: Delayed notification banner at the top of the page
-        setTimeout(function () {
-            const notification = document.getElementById("notification");
-            notification.textContent = "Welcome! This portfolio uses dynamic DOM manipulation and timed interactions.";
-            notification.style.display = "block";
-        }, 1000);
+        // Prevent form from actually submitting (demo only)
+        document.getElementById("contactForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+            alert("Message sent! (demo)");
+        });
     </script>
 </body>
 </html>
